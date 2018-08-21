@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <title>Real time Super chat</title>
+        <style>
+        	
+        	#zone_chat strong {
+        		color:white;
+        		background-color: black;
+        		padding:2px;
+        	}
+
+        </style>
+    </head>
+ 
+    <body>
+        <h1>Real-time chat </h1>
+
+        <form action="/" method="post" id="chat_form">
+        	<input type="text" name="message" id="message" placeholder="your message.." size="50" autofocus />
+        	<input type="submit" id="send_message" value="Send" />
+        </form>
+
+        <section id="chat_zone">
+        	
+        </section>
+
+        <script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
+        <script src="/socket.io/socket.io.js"></script>
+        <script>
+            var socket = io.connect('http://localhost:4040');
+
+            var username = prompt('what\'s your username?');
+
+            socket.emit('new_client',username);
+            document.title = username + '-' + document.title;
+
+            socket.on('message', function(data) {
+                insertMessage(data.username,data.message);
+            });
+
+            socket.on('new_client',function(username){
+            	$('#chat_zone').prepend('<p><em>' + username + ' has joined the chat!</em></p>');
+            });
+
+            $('#chat_form').submit(function () {
+                var message = $('#message').val();
+                socket.emit('message',message);
+                insertMessage(username,message);
+                $('#message').val('').focus();
+                return false;
+            });
+
+            function insertMessage(username,message){
+            	$('#chat_zone').prepend('<p><strong>' + username + '</strong>' + ' ' + message + '</p>')	;
+            }
+        </script>
+    </body>
+</html>
