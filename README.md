@@ -1,2 +1,2 @@
 # Real-time-Chat-application
-A real time chat allpication using nodejs
+A real time chat application using nodejs
